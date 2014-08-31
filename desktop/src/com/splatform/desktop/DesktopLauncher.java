@@ -6,7 +6,9 @@ import com.splatform.SplatformGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new SplatformGame(), config);
+        LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+        cfg.width = 800;
+        cfg.height = 600;
+        new LwjglApplication(new SplatformGame(), "Game", 800, 600);
 	}
 }
