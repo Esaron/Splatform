@@ -56,6 +56,17 @@ public class MovementProcessor implements InputProcessor
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button)
     {
+    	boolean result = false;
+        Player player = renderer.getPlayer();
+        int halfWidth = renderer.WIDTH/2;
+        
+    	if(screenX < halfWidth){
+    		player.setX(player.getX() - 5);
+    	}
+    	
+    	else if(screenX >= halfWidth){
+    		player.setX(player.getX() + 5);
+    	}
         return false;
     }
 
