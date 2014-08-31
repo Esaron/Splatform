@@ -9,8 +9,8 @@ import com.splatform.player.Player;
 public class WorldRenderer
 {
 
-    public static int WIDTH = Gdx.graphics.getWidth();
-    public static int HEIGHT = Gdx.graphics.getHeight();
+    public final int WIDTH = Gdx.graphics.getWidth();
+    public final int HEIGHT = Gdx.graphics.getHeight();
     private Player player;
     
     private static WorldRenderer renderer;

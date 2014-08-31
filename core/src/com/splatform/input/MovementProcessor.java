@@ -62,12 +62,13 @@ public class MovementProcessor implements InputProcessor
         
     	if(screenX < halfWidth){
     		player.setX(player.getX() - 5);
+    		result = true;
     	}
-    	
     	else if(screenX >= halfWidth){
     		player.setX(player.getX() + 5);
+    		result = true;
     	}
-        return false;
+        return result;
     }
 
     @Override
