@@ -1,11 +1,11 @@
-package com.jdn.splatform;
+package com.splatform;
 
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
-import com.jdn.splatform.SplatformGame;
+import com.splatform.SplatformGame;
 
 public class IOSLauncher extends IOSApplication.Delegate {
     @Override

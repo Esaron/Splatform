@@ -1,10 +1,10 @@
-package com.jdn.splatform.android;
+package com.splatform.android;
 
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.jdn.splatform.SplatformGame;
+import com.splatform.SplatformGame;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override

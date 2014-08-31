@@ -1,4 +1,4 @@
-package com.jdn.splatform;
+package com.splatform;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;

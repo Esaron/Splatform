@@ -1,9 +1,9 @@
-package com.jdn.splatform.client;
+package com.splatform.client;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.jdn.splatform.SplatformGame;
+import com.splatform.SplatformGame;
 
 public class HtmlLauncher extends GwtApplication {
 
