@@ -1,0 +1,11 @@
+When you start working:
+  git pull
+    Gets the changes that others have made to the project.
+
+When you have made changes to the project that you want to publish:
+  git add <files to add. Could be a directory>
+    Stages the changes you have made so they will be committed by the next 'git commit'
+  git commit -m "<message>"
+    Commits the files you added; creates a record of the changes you made.
+  git push
+    Publishes the changes you made to the git repository.
