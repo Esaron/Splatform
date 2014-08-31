@@ -3,6 +3,7 @@ package com.splatform.rendering;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.splatform.character.Player;
 
 
 public class WorldRenderer
@@ -10,12 +11,15 @@ public class WorldRenderer
 
     public static int WIDTH;
     public static int HEIGHT;
+    private Player player;
     
     private static WorldRenderer renderer;
     
     private PerspectiveCamera cam;
     
-    private WorldRenderer() {}
+    private WorldRenderer() {
+    	player = new Player(WIDTH/2, HEIGHT/2);
+    }
     
     public static WorldRenderer getInstance() {
         if (renderer == null) {
@@ -30,6 +34,7 @@ public class WorldRenderer
 
     public void render(float delta, GL20 gl)
     {
+    	player.render();
         this.cam.update(true);
     }
     
