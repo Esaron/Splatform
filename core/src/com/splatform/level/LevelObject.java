@@ -1,7 +1,6 @@
-package com.splatform.levelObject;
+package com.splatform.level;
 
 import com.badlogic.gdx.math.Vector2;
-
 
 public abstract class LevelObject {
 
@@ -110,8 +109,11 @@ public abstract class LevelObject {
         accelerationTimeY += time;
         velocity.add(acceleration.x * accelerationTimeX,
                 acceleration.y * accelerationTimeY);
-        if (Math.abs(acceleration.x) + Math.abs(acceleration.y) == 0) {
-            resetAccelerationTime();
+        if (acceleration.x == 0) {
+            resetAccelerationTimeX();
+        }
+        if (acceleration.y == 0) {
+            resetAccelerationTimeY();
         }
         if (Math.abs(velocity.x) + Math.abs(velocity.y) > 0) {
             isMoving = true;

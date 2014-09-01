@@ -1,7 +1,7 @@
 package com.splatform.gravity;
 
 import com.badlogic.gdx.math.Vector2;
-import com.splatform.levelObject.LevelObject;
+import com.splatform.level.LevelObject;
 
 public abstract class GravityObject extends LevelObject {
     // Gravity on earth = 9.8 m/pow(s, 2)
