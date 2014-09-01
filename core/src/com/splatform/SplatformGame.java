@@ -3,7 +3,9 @@ package com.splatform;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.splatform.input.DebugProcessor;
 import com.splatform.input.MovementProcessor;
+import com.splatform.rendering.WorldRenderer;
 import com.splatform.screens.GameScreen;
 
 public class SplatformGame extends Game {
@@ -15,7 +17,10 @@ public class SplatformGame extends Game {
     public void create () {
         this.screen = new GameScreen();
         this.setScreen(screen);
-        plexer.addProcessor(new MovementProcessor());
+        MovementProcessor processor = new MovementProcessor();
+        WorldRenderer.getInstance().setProcessor(processor);
+        plexer.addProcessor(processor);
+        plexer.addProcessor(new DebugProcessor());
         Gdx.input.setInputProcessor(plexer);
     }
 

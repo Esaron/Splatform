@@ -3,20 +3,21 @@ package com.splatform.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.splatform.input.MovementProcessor;
 import com.splatform.player.Player;
 
 public class WorldRenderer {
 
-    public int WIDTH = Gdx.graphics.getWidth();
-    public int HEIGHT = Gdx.graphics.getHeight();
+    public static int WIDTH = Gdx.graphics.getWidth();
+    public static int HEIGHT = Gdx.graphics.getHeight();
     private static WorldRenderer renderer;
     private Player player;
     private PerspectiveCamera cam;
+    private MovementProcessor processor;
 
     private WorldRenderer() {
         player = new Player(0, 0);
-        player.setX((WIDTH - player.getWidth())/2);
-        player.setY((HEIGHT - player.getHeight())/2);
     }
 
     public static WorldRenderer getInstance() {
@@ -34,7 +35,45 @@ public class WorldRenderer {
         return player;
     }
 
+    public void setProcessor(MovementProcessor processor) {
+        this.processor = processor;
+    }
+
     public void render(float delta, GL20 gl) {
+        int playerX = player.getX();
+        int playerY = player.getY();
+        int maxWidth = WIDTH - player.getWidth();
+        int maxHeight = HEIGHT - player.getHeight();
+
+        if (playerY < 0) {
+            player.setY(0);
+            player.setFalling(false);
+        }
+        else if (playerY > maxHeight) {
+            player.setY(maxHeight);
+        }
+
+        if (playerX < 0) {
+            player.setX(0);
+        }
+        else if (playerX > maxWidth) {
+            player.setX(maxWidth);
+        }
+
+        if (player.isFalling()) {
+            player.fall(delta);
+        }
+        player.accelerate(delta);
+
+        if (processor.isMovingLeft()) {
+            player.move(-4, 0);
+        }
+        else if (processor.isMovingRight()) {
+            player.move(4, 0);
+        }
+
+        Vector2 playerVelocity = player.getVelocity();
+        player.move((int)playerVelocity.x, (int)playerVelocity.y);
         player.render();
         this.cam.update(true);
     }

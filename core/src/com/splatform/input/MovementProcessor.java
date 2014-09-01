@@ -7,6 +7,16 @@ import com.splatform.rendering.WorldRenderer;
 
 public class MovementProcessor implements InputProcessor {
     private WorldRenderer renderer = WorldRenderer.getInstance();
+    private boolean leftHeld;
+    private boolean rightHeld;
+
+    public boolean isMovingLeft() {
+        return leftHeld;
+    }
+
+    public boolean isMovingRight() {
+        return rightHeld;
+    }
 
     @Override
     public boolean keyDown(int keycode) {
@@ -14,13 +24,15 @@ public class MovementProcessor implements InputProcessor {
         Player player = renderer.getPlayer();
         switch(keycode) {
             case Input.Keys.A:
-                System.out.println("A pressed");
-                player.setX(player.getX() - 5);
+                leftHeld = true;
                 result = true;
                 break;
             case Input.Keys.D:
-                System.out.println("D pressed");
-                player.setX(player.getX() + 5);
+                rightHeld = true;
+                result = true;
+                break;
+            case Input.Keys.SPACE:
+                player.jump();
                 result = true;
                 break;
         }
@@ -32,11 +44,11 @@ public class MovementProcessor implements InputProcessor {
         boolean result = false;
         switch(keycode) {
             case Input.Keys.A:
-                System.out.println("A released");
+                leftHeld = false;
                 result = true;
                 break;
             case Input.Keys.D:
-                System.out.println("D released");
+                rightHeld = false;
                 result = true;
                 break;
         }
@@ -52,14 +64,18 @@ public class MovementProcessor implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean result = false;
         Player player = renderer.getPlayer();
-        int halfWidth = renderer.WIDTH/2;
+        int sixthWidth = WorldRenderer.WIDTH/6;
 
-        if(screenX < halfWidth){
-            player.setX(player.getX() - 5);
+        if (screenX < sixthWidth){
+            leftHeld = true;
             result = true;
         }
-        else if(screenX >= halfWidth){
-            player.setX(player.getX() + 5);
+        else if (screenX > WorldRenderer.WIDTH - sixthWidth){
+            rightHeld = true;
+            result = true;
+        }
+        else {
+            player.jump();
             result = true;
         }
         return result;
@@ -67,7 +83,18 @@ public class MovementProcessor implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
+        boolean result = false;
+        int sixthWidth = WorldRenderer.WIDTH/6;
+
+        if (screenX < sixthWidth){
+            leftHeld = false;
+            result = true;
+        }
+        else if (screenX > WorldRenderer.WIDTH - sixthWidth){
+            rightHeld = false;
+            result = true;
+        }
+        return result;
     }
 
     @Override
