@@ -9,6 +9,9 @@ public class MovementProcessor implements InputProcessor {
     private WorldRenderer renderer = WorldRenderer.getInstance();
     private boolean leftHeld;
     private boolean rightHeld;
+    private boolean upHeld;
+    private boolean downHeld;
+    private boolean shiftHeld;
 
     public boolean isMovingLeft() {
         return leftHeld;
@@ -16,6 +19,14 @@ public class MovementProcessor implements InputProcessor {
 
     public boolean isMovingRight() {
         return rightHeld;
+    }
+    
+    public boolean isMovingUp() {
+    	return (upHeld && shiftHeld);
+    }
+    
+    public boolean isMovingDown() {
+    	return (downHeld && shiftHeld);
     }
 
     @Override
@@ -35,6 +46,18 @@ public class MovementProcessor implements InputProcessor {
                 player.jump();
                 result = true;
                 break;
+            case Input.Keys.W:
+            	upHeld = true;
+            	result = true;
+            	break;
+            case Input.Keys.S:
+            	downHeld = true;
+            	result = true;
+            	break;
+            case Input.Keys.SHIFT_LEFT:
+            	shiftHeld = true;
+            	result = true;
+            	break;
         }
         return result;
     }
@@ -42,6 +65,7 @@ public class MovementProcessor implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         boolean result = false;
+        Player player = renderer.getPlayer();
         switch(keycode) {
             case Input.Keys.A:
                 leftHeld = false;
@@ -51,6 +75,19 @@ public class MovementProcessor implements InputProcessor {
                 rightHeld = false;
                 result = true;
                 break;
+            case Input.Keys.W:
+            	upHeld = false;
+            	result = true;
+            	break;
+            case Input.Keys.S:
+            	downHeld = false;
+            	result = true;
+            	break;
+            case Input.Keys.SHIFT_LEFT:
+            	player.jump();
+            	shiftHeld = false;
+            	result = true;
+            	break;
         }
         return result;
     }

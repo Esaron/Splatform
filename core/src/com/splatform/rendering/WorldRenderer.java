@@ -71,6 +71,13 @@ public class WorldRenderer {
         else if (processor.isMovingRight()) {
             player.move(player.getSpeed(), 0);
         }
+        
+        if (processor.isMovingUp()){
+        	player.move(0, player.getSpeed());
+        }
+        else if (processor.isMovingDown()){
+        	player.move(0, -player.getSpeed());
+        }
 
         Vector2 playerVelocity = player.getVelocity();
         player.move((int)playerVelocity.x, (int)playerVelocity.y);

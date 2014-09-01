@@ -22,7 +22,7 @@ public class Player extends JumpingObject {
         super(x, y, jumpVelocity);
         this.speed = speed;
         body = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
+        img = new Texture("Dale(no_background).png");
         width = img.getWidth();
         height = img.getHeight();
     }
