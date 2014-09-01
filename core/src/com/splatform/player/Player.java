@@ -10,7 +10,7 @@ public class Player extends JumpingObject {
     private int height;
     private SpriteBatch body;
     private Texture img;
-    private float speed;
+    private int speed;
 
     public Player() {}
 
@@ -18,7 +18,7 @@ public class Player extends JumpingObject {
         this(x, y, 6, new Vector2(0, 20));
     }
 
-    public Player(int x, int y, float speed, Vector2 jumpVelocity) {
+    public Player(int x, int y, int speed, Vector2 jumpVelocity) {
         super(x, y, jumpVelocity);
         this.speed = speed;
         body = new SpriteBatch();
@@ -27,11 +27,11 @@ public class Player extends JumpingObject {
         height = img.getHeight();
     }
 
-    public float getSpeed() {
+    public int getSpeed() {
         return this.speed;
     }
 
-    public void setSpeed(float speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 

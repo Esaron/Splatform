@@ -66,10 +66,10 @@ public class WorldRenderer {
         player.accelerate(delta);
 
         if (processor.isMovingLeft()) {
-            player.move(-4, 0);
+            player.move(-player.getSpeed(), 0);
         }
         else if (processor.isMovingRight()) {
-            player.move(4, 0);
+            player.move(player.getSpeed(), 0);
         }
 
         Vector2 playerVelocity = player.getVelocity();
