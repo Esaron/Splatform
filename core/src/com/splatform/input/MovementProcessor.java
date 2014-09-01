@@ -5,14 +5,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.splatform.player.Player;
 import com.splatform.rendering.WorldRenderer;
 
-
-public class MovementProcessor implements InputProcessor
-{
+public class MovementProcessor implements InputProcessor {
     private WorldRenderer renderer = WorldRenderer.getInstance();
 
     @Override
-    public boolean keyDown(int keycode)
-    {
+    public boolean keyDown(int keycode) {
         boolean result = false;
         Player player = renderer.getPlayer();
         switch(keycode) {
@@ -31,8 +28,7 @@ public class MovementProcessor implements InputProcessor
     }
 
     @Override
-    public boolean keyUp(int keycode)
-    {
+    public boolean keyUp(int keycode) {
         boolean result = false;
         switch(keycode) {
             case Input.Keys.A:
@@ -48,50 +44,44 @@ public class MovementProcessor implements InputProcessor
     }
 
     @Override
-    public boolean keyTyped(char character)
-    {
+    public boolean keyTyped(char character) {
         return false;
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button)
-    {
-    	boolean result = false;
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        boolean result = false;
         Player player = renderer.getPlayer();
         int halfWidth = renderer.WIDTH/2;
-        
-    	if(screenX < halfWidth){
-    		player.setX(player.getX() - 5);
-    		result = true;
-    	}
-    	else if(screenX >= halfWidth){
-    		player.setX(player.getX() + 5);
-    		result = true;
-    	}
+
+        if(screenX < halfWidth){
+            player.setX(player.getX() - 5);
+            result = true;
+        }
+        else if(screenX >= halfWidth){
+            player.setX(player.getX() + 5);
+            result = true;
+        }
         return result;
     }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button)
-    {
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
     }
 
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer)
-    {
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
         return false;
     }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY)
-    {
+    public boolean mouseMoved(int screenX, int screenY) {
         return false;
     }
 
     @Override
-    public boolean scrolled(int amount)
-    {
+    public boolean scrolled(int amount) {
         return false;
     }
 }

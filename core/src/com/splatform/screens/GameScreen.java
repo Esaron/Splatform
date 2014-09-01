@@ -5,24 +5,21 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.splatform.rendering.WorldRenderer;
 
-
 public class GameScreen implements Screen
 {
     private WorldRenderer renderer;
 
     public GameScreen() {}
-    
+
     @Override
-    public void render(float delta)
-    {
+    public void render(float delta) {
         GL20 gl = Gdx.graphics.getGL20();
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         this.renderer.render(delta, gl);
     }
 
     @Override
-    public void resize(int width, int height)
-    {
+    public void resize(int width, int height) {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(GL20.GL_LESS);
@@ -31,34 +28,28 @@ public class GameScreen implements Screen
     }
 
     @Override
-    public void show()
-    {
+    public void show() {
         this.renderer = WorldRenderer.getInstance();
 
     }
 
     @Override
-    public void hide()
-    {
+    public void hide() {
 
     }
 
     @Override
-    public void pause()
-    {
+    public void pause() {
 
     }
 
     @Override
-    public void resume()
-    {
+    public void resume() {
 
     }
 
     @Override
-    public void dispose()
-    {
+    public void dispose() {
 
     }
-
 }

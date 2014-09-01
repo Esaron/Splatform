@@ -5,31 +5,27 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.splatform.player.Player;
 
-
-public class WorldRenderer
-{
+public class WorldRenderer {
 
     public int WIDTH = Gdx.graphics.getWidth();
     public int HEIGHT = Gdx.graphics.getHeight();
-    private Player player;
-    
     private static WorldRenderer renderer;
-    
+    private Player player;
     private PerspectiveCamera cam;
-    
+
     private WorldRenderer() {
-    	player = new Player(0, 0);
-    	player.setX((WIDTH - player.getWidth())/2);
-    	player.setY((HEIGHT - player.getHeight())/2);
+        player = new Player(0, 0);
+        player.setX((WIDTH - player.getWidth())/2);
+        player.setY((HEIGHT - player.getHeight())/2);
     }
-    
+
     public static WorldRenderer getInstance() {
         if (renderer == null) {
             renderer = new WorldRenderer();
         }
         return renderer;
     }
-    
+
     public PerspectiveCamera getCam() {
         return cam;
     }
@@ -38,12 +34,11 @@ public class WorldRenderer
         return player;
     }
 
-    public void render(float delta, GL20 gl)
-    {
-    	player.render();
+    public void render(float delta, GL20 gl) {
+        player.render();
         this.cam.update(true);
     }
-    
+
     public void resize(int width, int height) {
         WIDTH = width;
         HEIGHT = height;
