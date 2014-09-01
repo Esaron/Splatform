@@ -4,8 +4,15 @@ When you start working:
 
 When you have made changes to the project that you want to publish:
   git add <files to add. Could be a directory>
-    Stages the changes you have made so they will be committed by the next 'git commit'
+    Stages the changes you have made so they will be committed by the next 'git commit'.
   git commit -m "<message>"
     Commits the files you added; creates a record of the changes you made.
   git push
     Publishes the changes you made to the git repository.
+
+When you want to browse through code history:
+  gitk
+    Launches a GUI that lets you look through past commits. 
+    The top frame in the GUI lists the commits over time, when they were made, and who made them, etc.
+    The bottom right frame lists the files that were changed for the commit selected in the top frame.
+    The bottom left frame shows the changes that were made for the file selected in the bottom right frame in the commit in the top frame. A line with green text that starts with a '+' means that line was added in that commit. A line with red text that starts with a '-' means that line was removed in that commit. If the lines look the same, it's usually because a small part of that line was changed.
