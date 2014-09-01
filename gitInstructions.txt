@@ -15,4 +15,7 @@ When you want to browse through code history:
     Launches a GUI that lets you look through past commits. 
     The top frame in the GUI lists the commits over time, when they were made, and who made them, etc.
     The bottom right frame lists the files that were changed for the commit selected in the top frame.
-    The bottom left frame shows the changes that were made for the file selected in the bottom right frame in the commit in the top frame. A line with green text that starts with a '+' means that line was added in that commit. A line with red text that starts with a '-' means that line was removed in that commit. If the lines look the same, it's usually because a small part of that line was changed.
+    The bottom left frame shows the changes that were made for the file selected in the bottom right frame in the commit in the top frame.
+    A line with green text that starts with a '+' means that line was added in that commit.
+    A line with red text that starts with a '-' means that line was removed in that commit.
+    If the lines look the same, it's usually because a small part of that line was changed.
