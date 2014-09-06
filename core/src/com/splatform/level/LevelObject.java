@@ -57,12 +57,12 @@ public abstract class LevelObject {
         yPosition = y;
     }
 
-    public void setPosition(float x, float y) {
+    public void setPosition(int x, int y) {
         xPosition = x;
         yPosition = y;
     }
 
-    public void move(float x, float y) {
+    public void move(int x, int y) {
         xPosition += x;
         yPosition += y;
     }

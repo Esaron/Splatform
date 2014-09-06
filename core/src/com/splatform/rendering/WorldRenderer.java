@@ -68,21 +68,21 @@ public class WorldRenderer {
         player.accelerate(delta);
 
         if (processor.isMovingLeft()) {
-            player.move(-runVelocity.x, runVelocity.y);
+            player.move(-(int)runVelocity.x, (int)runVelocity.y);
         }
         else if (processor.isMovingRight()) {
-            player.move(runVelocity.x, runVelocity.y);
+            player.move((int)runVelocity.x, (int)runVelocity.y);
         }
         
         if (processor.isMovingUp()){
-            player.move(0, runVelocity.x);
+            player.move(0, (int)runVelocity.x);
         }
         else if (processor.isMovingDown()){
-            player.move(0, -runVelocity.x);
+            player.move(0, -(int)runVelocity.x);
         }
 
         Vector2 playerVelocity = player.getVelocity();
-        player.move(playerVelocity.x, playerVelocity.y);
+        player.move((int)playerVelocity.x, (int)playerVelocity.y);
         player.render();
         this.cam.update(true);
     }
