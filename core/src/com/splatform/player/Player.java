@@ -5,9 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.splatform.level.LevelObject;
 import com.splatform.physics.IFaller;
+import com.splatform.physics.IFlyer;
 import com.splatform.physics.IJumper;
 
-public class Player extends LevelObject implements IFaller, IJumper {
+public class Player extends LevelObject implements IFaller, IJumper, IFlyer {
     private int width;
     private int height;
     private SpriteBatch body;
@@ -16,7 +17,10 @@ public class Player extends LevelObject implements IFaller, IJumper {
     private Vector2 jumpVelocity;
     private boolean isJumping;
     private boolean isFalling;
+    private boolean isFlying;
     private float fallTime;
+    private float flyTime;
+    private static final float MAX_FLY_TIME = 3000;
 
     public Player() {}
 
@@ -138,10 +142,61 @@ public class Player extends LevelObject implements IFaller, IJumper {
 
     @Override
     public void jump() {
+    	isFalling = true;
+        isJumping = true;
+        velocity.add(jumpVelocity);
+    }
+    
+    
+    public void jumpOrFly() {
         if (!isJumping) {
-            isFalling = true;
-            isJumping = true;
-            velocity.add(jumpVelocity);
+            jump();
+        }
+        else {
+        	setFlying(true);
         }
     }
+
+	@Override
+	public boolean isFlying() {
+		return isFlying;
+	}
+
+	@Override
+	public void setFlying(boolean isFlying) {
+		this.isFlying = isFlying;
+		setFalling(!isFlying);
+		if(!isFlying){
+			velocity.y = 0;
+			resetFlyTime();
+		}
+		else {
+			setJumping(false);
+		}
+	}
+
+	@Override
+	public float getFlyTime() {
+		return flyTime;
+	}
+
+	@Override
+	public void setFlyTime(float flyTime) {
+		this.flyTime = flyTime;
+	}
+
+	@Override
+	public void resetFlyTime() {
+		flyTime = 0;
+	}
+
+	@Override
+	public void fly(float delta) {
+		if(!isFlying){
+			setFlying(true);
+		}
+		
+		move(0,(int) Math.ceil((jumpVelocity.y * delta * 40)));
+		flyTime += delta * 1000;
+	}
 }

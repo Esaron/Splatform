@@ -10,7 +10,7 @@ public interface IFaller {
 
     public float getFallTime();
 
-    public void setFallTime(float fallAccelerationTime);
+    public void setFallTime(float fallTime);
 
     public void resetFallTime();
 

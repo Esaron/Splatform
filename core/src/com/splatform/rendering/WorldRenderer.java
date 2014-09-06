@@ -75,10 +75,7 @@ public class WorldRenderer {
         }
         
         if (processor.isMovingUp()){
-            player.move(0, (int)runVelocity.x);
-        }
-        else if (processor.isMovingDown()){
-            player.move(0, -(int)runVelocity.x);
+            player.fly(delta);
         }
 
         Vector2 playerVelocity = player.getVelocity();
