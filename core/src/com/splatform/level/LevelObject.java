@@ -4,8 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class LevelObject {
 
-    protected int x;
-    protected int y;
+    protected int xPosition;
+    protected int yPosition;
     protected Vector2 acceleration = new Vector2();
     protected Vector2 velocity = new Vector2();
     protected boolean isMoving;
@@ -14,17 +14,13 @@ public abstract class LevelObject {
 
     public LevelObject() {}
 
-    public LevelObject(int x, int y) {
-        this(x, y, new Vector2(), new Vector2());
+    public LevelObject(int xPosition, int yPosition) {
+        this(xPosition, yPosition, new Vector2(), new Vector2());
     }
 
-    public LevelObject(Vector2 acceleration, Vector2 velocity) {
-        this(0, 0, acceleration, velocity);
-    }
-
-    public LevelObject(int x, int y, Vector2 acceleration, Vector2 velocity) {
-        this.x = x;
-        this.y = y;
+    public LevelObject(int xPosition, int yPosition, Vector2 acceleration, Vector2 velocity) {
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
         this.acceleration = acceleration;
         this.velocity = velocity;
     }
@@ -45,30 +41,30 @@ public abstract class LevelObject {
         this.velocity = velocity;
     }
 
-    public int getX() {
-        return x;
+    public float getX() {
+        return xPosition;
     }
     
     public void setX(int x) {
-        this.x = x;
+        xPosition = x;
     }
 
-    public int getY() {
-        return y;
+    public float getY() {
+        return yPosition;
     }
     
     public void setY(int y) {
-        this.y = y;
+        yPosition = y;
     }
 
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public void setPosition(float x, float y) {
+        xPosition = x;
+        yPosition = y;
     }
 
-    public void move(int x, int y) {
-        this.x += x;
-        this.y += y;
+    public void move(float x, float y) {
+        xPosition += x;
+        yPosition += y;
     }
 
     public boolean isMoving() {

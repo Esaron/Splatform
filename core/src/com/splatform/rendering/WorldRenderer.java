@@ -40,14 +40,16 @@ public class WorldRenderer {
     }
 
     public void render(float delta, GL20 gl) {
-        int playerX = player.getX();
-        int playerY = player.getY();
+        float playerX = player.getX();
+        float playerY = player.getY();
         int maxWidth = WIDTH - player.getWidth();
         int maxHeight = HEIGHT - player.getHeight();
+        Vector2 runVelocity = player.getRunVelocity();
 
         if (playerY < 0) {
             player.setY(0);
             player.setFalling(false);
+            player.setJumping(false);
         }
         else if (playerY > maxHeight) {
             player.setY(maxHeight);
@@ -66,21 +68,21 @@ public class WorldRenderer {
         player.accelerate(delta);
 
         if (processor.isMovingLeft()) {
-            player.move(-player.getSpeed(), 0);
+            player.move(-runVelocity.x, runVelocity.y);
         }
         else if (processor.isMovingRight()) {
-            player.move(player.getSpeed(), 0);
+            player.move(runVelocity.x, runVelocity.y);
         }
         
         if (processor.isMovingUp()){
-        	player.move(0, player.getSpeed());
+            player.move(0, runVelocity.x);
         }
         else if (processor.isMovingDown()){
-        	player.move(0, -player.getSpeed());
+            player.move(0, -runVelocity.x);
         }
 
         Vector2 playerVelocity = player.getVelocity();
-        player.move((int)playerVelocity.x, (int)playerVelocity.y);
+        player.move(playerVelocity.x, playerVelocity.y);
         player.render();
         this.cam.update(true);
     }
