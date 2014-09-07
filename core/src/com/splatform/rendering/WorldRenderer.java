@@ -3,6 +3,7 @@ package com.splatform.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.splatform.input.MovementProcessor;
 import com.splatform.player.Player;
@@ -11,6 +12,7 @@ public class WorldRenderer {
 
     public static int WIDTH = Gdx.graphics.getWidth();
     public static int HEIGHT = Gdx.graphics.getHeight();
+    public static TextureAtlas TEXTURES = new TextureAtlas(Gdx.files.internal("textures/textures.pack"));
     private static WorldRenderer renderer;
     private Player player;
     private PerspectiveCamera cam;
@@ -74,8 +76,11 @@ public class WorldRenderer {
             player.move((int)runVelocity.x, (int)runVelocity.y);
         }
         
-        if (processor.isMovingUp()){
+        if (processor.isMovingUp() && player.isFlying()){
             player.fly(delta);
+            if (player.getFlyTime() > player.getMaxFlyTime()) {
+                player.setFlying(false);
+            }
         }
 
         Vector2 playerVelocity = player.getVelocity();

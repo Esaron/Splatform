@@ -1,26 +1,28 @@
 package com.splatform.player;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.splatform.level.LevelObject;
 import com.splatform.physics.IFaller;
 import com.splatform.physics.IFlyer;
 import com.splatform.physics.IJumper;
+import com.splatform.rendering.WorldRenderer;
 
 public class Player extends LevelObject implements IFaller, IJumper, IFlyer {
     private int width;
     private int height;
     private SpriteBatch body;
-    private Texture img;
+    private Sprite img;
     private Vector2 runVelocity;
     private Vector2 jumpVelocity;
+    private Vector2 flyVelocity = new Vector2(0, 20);
     private boolean isJumping;
     private boolean isFalling;
     private boolean isFlying;
     private float fallTime;
     private float flyTime;
-    private static final float MAX_FLY_TIME = 3000;
+    private float maxFlyTime = 3;
 
     public Player() {}
 
@@ -33,9 +35,9 @@ public class Player extends LevelObject implements IFaller, IJumper, IFlyer {
         this.jumpVelocity = jumpVelocity;
         this.runVelocity = runVelocity;
         body = new SpriteBatch();
-        img = new Texture("Dale(no_background).png");
-        width = img.getWidth();
-        height = img.getHeight();
+        img = WorldRenderer.TEXTURES.createSprite("Dale");
+        width = (int) Math.ceil(img.getWidth());
+        height = (int) Math.ceil(img.getHeight());
     }
 
     public Vector2 getRunVelocity() {
@@ -62,11 +64,11 @@ public class Player extends LevelObject implements IFaller, IJumper, IFlyer {
         this.body = body;
     }
 
-    public Texture getImg() {
+    public Sprite getImg() {
         return img;
     }
 
-    public void setImg(Texture img) {
+    public void setImg(Sprite img) {
         this.img = img;
     }
 
@@ -142,61 +144,70 @@ public class Player extends LevelObject implements IFaller, IJumper, IFlyer {
 
     @Override
     public void jump() {
-    	isFalling = true;
-        isJumping = true;
+        setFalling(true);
+        setJumping(true);
         velocity.add(jumpVelocity);
     }
     
     
     public void jumpOrFly() {
-        if (!isJumping) {
+        if (!isJumping && !isFalling) {
             jump();
         }
         else {
-        	setFlying(true);
+            setFlying(true);
         }
     }
 
-	@Override
-	public boolean isFlying() {
-		return isFlying;
-	}
+    @Override
+    public boolean isFlying() {
+        return isFlying;
+    }
 
-	@Override
-	public void setFlying(boolean isFlying) {
-		this.isFlying = isFlying;
-		setFalling(!isFlying);
-		if(!isFlying){
-			velocity.y = 0;
-			resetFlyTime();
-		}
-		else {
-			setJumping(false);
-		}
-	}
+    @Override
+    public void setFlying(boolean isFlying) {
+        this.isFlying = isFlying;
+        setFalling(!isFlying);
+        if(!isFlying){
+            resetFlyTime();
+        }
+        else {
+            setJumping(false);
+        }
+    }
 
-	@Override
-	public float getFlyTime() {
-		return flyTime;
-	}
+    @Override
+    public float getFlyTime() {
+        return flyTime;
+    }
 
-	@Override
-	public void setFlyTime(float flyTime) {
-		this.flyTime = flyTime;
-	}
+    @Override
+    public void setFlyTime(float flyTime) {
+        this.flyTime = flyTime;
+    }
+    
+    @Override
+    public float getMaxFlyTime() {
+        return maxFlyTime;
+    }
+    
+    @Override
+    public void setMaxFlyTime(float maxFlyTime) {
+        this.maxFlyTime = maxFlyTime;
+    }
 
-	@Override
-	public void resetFlyTime() {
-		flyTime = 0;
-	}
+    @Override
+    public void resetFlyTime() {
+        flyTime = 0;
+    }
 
-	@Override
-	public void fly(float delta) {
-		if(!isFlying){
-			setFlying(true);
-		}
-		
-		move(0,(int) Math.ceil((jumpVelocity.y * delta * 40)));
-		flyTime += delta * 1000;
-	}
+    @Override
+    public void fly(float delta) {
+        if(!isFlying){
+            setFlying(true);
+        }
+        move(0, (int) (flyVelocity.y * Math.ceil(delta)));
+        flyTime += delta;
+        System.out.println(flyTime);
+    }
 }

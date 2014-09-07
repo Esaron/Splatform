@@ -9,7 +9,7 @@ public class MovementProcessor implements InputProcessor {
     private WorldRenderer renderer = WorldRenderer.getInstance();
     private boolean leftHeld;
     private boolean rightHeld;
-    private boolean isFlying;
+    private boolean spaceHeld;
 
     public boolean isMovingLeft() {
         return leftHeld;
@@ -20,7 +20,7 @@ public class MovementProcessor implements InputProcessor {
     }
     
     public boolean isMovingUp() {
-    	return isFlying;
+    	return spaceHeld;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class MovementProcessor implements InputProcessor {
                 break;
             case Input.Keys.SPACE:
                 player.jumpOrFly();
-                isFlying = player.isFlying();
+                spaceHeld = true;
                 result = true;
                 break;
         }
@@ -59,10 +59,10 @@ public class MovementProcessor implements InputProcessor {
                 result = true;
                 break;
             case Input.Keys.SPACE:
-            	player.setFalling(true);
-            	isFlying = false;
-            	result = true;
-            	break;
+                player.setFalling(true);
+                spaceHeld = false;
+                result = true;
+                break;
         }
         return result;
     }

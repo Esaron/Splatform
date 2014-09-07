@@ -10,9 +10,11 @@ public interface IFlyer {
 	
 	public void setFlyTime(float flyTime);
 	
+	public float getMaxFlyTime();
+	
+	public void setMaxFlyTime(float maxFlyTime);
+	
 	public void resetFlyTime();
 	
 	public void fly(float delta);
-	
-	
 }

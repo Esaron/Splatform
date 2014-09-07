@@ -4,7 +4,7 @@ When you start working:
 
 When you have made changes to the project that you want to publish:
   git add <files to add. Could be a directory>
-    Stages the changes you have made so they will be committed by the next 'git commit'.
+    Stages the changes you have made so they will be committed by the next 'git commit'. DO NOT ADD FILES that are not already in the project UNLESS you created them yourself.
   git commit -m "<message>"
     Commits the files you added; creates a record of the changes you made.
   git push
@@ -19,3 +19,11 @@ When you want to browse through code history:
     A line with green text that starts with a '+' means that line was added in that commit.
     A line with red text that starts with a '-' means that line was removed in that commit.
     If the lines look the same, it's usually because a small part of that line was changed.
+
+NEVER PUSH BROKEN CODE! If you have some new code that you want to push to github to save your history and back it up, or if you want me to look at it, use the following instructions to make a new branch BEFORE using 'git push':
+  git branch -m "<new branch name>"
+    This will move everything you're working on (the current local branch on your computer) to a new local branch with the name you provided. Now, when you push this new branch (which still has all of your work, whether you already committed it or not) a new branch will be created on github, and the old branch won't change. Now you can jump back and forth between these branches whenever you want by using the next command.
+  git checkout "<branch name>"
+    This will let you jump between branches. After you've pushed a new branch as above, you can run 'git checkout master' to go back to the 'master' branch, which is where the main development occurs.
+  git branch
+    Without any arguments passed to this command, you can see the branch you are currently on. Type 'git branch help' for more things to do with the branch command.
