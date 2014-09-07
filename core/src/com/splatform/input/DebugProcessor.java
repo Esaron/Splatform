@@ -2,8 +2,8 @@ package com.splatform.input;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.splatform.player.Player;
-import com.splatform.rendering.WorldRenderer;
+import com.splatform.model.player.Player;
+import com.splatform.view.WorldRenderer;
 
 public class DebugProcessor implements InputProcessor {
     private WorldRenderer renderer = WorldRenderer.getInstance();
@@ -14,7 +14,7 @@ public class DebugProcessor implements InputProcessor {
         Player player = renderer.getPlayer();
         switch(keycode) {
             case Input.Keys.SLASH:
-                player.debug();
+                System.out.println(player);
                 result = true;
                 break;
         }

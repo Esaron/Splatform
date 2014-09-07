@@ -2,43 +2,33 @@ package com.splatform.input;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.splatform.player.Player;
-import com.splatform.rendering.WorldRenderer;
+import com.splatform.controller.PlayerController;
+import com.splatform.model.player.Player;
+import com.splatform.model.player.Player.State;
+import com.splatform.view.WorldRenderer;
 
 public class MovementProcessor implements InputProcessor {
-    private WorldRenderer renderer = WorldRenderer.getInstance();
-    private boolean leftHeld;
-    private boolean rightHeld;
-    private boolean spaceHeld;
-
-    public boolean isMovingLeft() {
-        return leftHeld;
-    }
-
-    public boolean isMovingRight() {
-        return rightHeld;
-    }
     
-    public boolean isMovingUp() {
-    	return spaceHeld;
+    PlayerController controller;
+    
+    public MovementProcessor(PlayerController controller) {
+        this.controller = controller;
     }
 
     @Override
     public boolean keyDown(int keycode) {
         boolean result = false;
-        Player player = renderer.getPlayer();
         switch(keycode) {
             case Input.Keys.A:
-                leftHeld = true;
+                controller.leftPressed();
                 result = true;
                 break;
             case Input.Keys.D:
-                rightHeld = true;
+                controller.rightPressed();
                 result = true;
                 break;
             case Input.Keys.SPACE:
-                player.jumpOrFly();
-                spaceHeld = true;
+                controller.jumpFlyPressed();
                 result = true;
                 break;
         }
@@ -48,19 +38,17 @@ public class MovementProcessor implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         boolean result = false;
-        Player player = renderer.getPlayer();
         switch(keycode) {
             case Input.Keys.A:
-                leftHeld = false;
+                controller.leftReleased();
                 result = true;
                 break;
             case Input.Keys.D:
-                rightHeld = false;
+                controller.rightReleased();
                 result = true;
                 break;
             case Input.Keys.SPACE:
-                player.setFalling(true);
-                spaceHeld = false;
+                controller.jumpFlyReleased();
                 result = true;
                 break;
         }
@@ -75,19 +63,18 @@ public class MovementProcessor implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean result = false;
-        Player player = renderer.getPlayer();
         int sixthWidth = WorldRenderer.WIDTH/6;
 
-        if (screenX < sixthWidth){
-            leftHeld = true;
+        if (screenX < sixthWidth) {
+            controller.leftPressed();
             result = true;
         }
-        else if (screenX > WorldRenderer.WIDTH - sixthWidth){
-            rightHeld = true;
+        else if (screenX > WorldRenderer.WIDTH - sixthWidth) {
+            controller.rightPressed();
             result = true;
         }
         else {
-            player.jump();
+            controller.jumpFlyPressed();
             result = true;
         }
         return result;
@@ -98,12 +85,16 @@ public class MovementProcessor implements InputProcessor {
         boolean result = false;
         int sixthWidth = WorldRenderer.WIDTH/6;
 
-        if (screenX < sixthWidth){
-            leftHeld = false;
+        if (screenX < sixthWidth) {
+            controller.leftReleased();
             result = true;
         }
-        else if (screenX > WorldRenderer.WIDTH - sixthWidth){
-            rightHeld = false;
+        else if (screenX > WorldRenderer.WIDTH - sixthWidth) {
+            controller.rightReleased();
+            result = true;
+        }
+        else {
+            controller.jumpFlyReleased();
             result = true;
         }
         return result;
