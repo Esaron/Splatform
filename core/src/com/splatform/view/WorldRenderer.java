@@ -5,8 +5,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Vector2;
 import com.splatform.model.player.Player;
+import com.splatform.model.world.Platform;
+import com.splatform.model.world.World;
 
 public class WorldRenderer {
 
@@ -33,6 +34,7 @@ public class WorldRenderer {
     private float ppux;
     private float ppuy;
     
+    private World world;
     private Player player;
     
     // Used to draw all the sprites to the screen
@@ -45,7 +47,6 @@ public class WorldRenderer {
         cam.far = 300f;
         ppux = (float)WIDTH/CAMERA_WIDTH;
         ppuy = (float)HEIGHT/CAMERA_HEIGHT;
-        player = new Player(new Vector2(), WIDTH/10f, HEIGHT/10f);
     }
     
     private float getPixelXValue(float unitXValue) {
@@ -67,13 +68,31 @@ public class WorldRenderer {
         return cam;
     }
 
+    public void setCam(PerspectiveCamera cam) {
+        this.cam = cam;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+        this.player = world.getPlayer();
+    }
+
     public Player getPlayer() {
         return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public void render(float delta, GL20 gl) {
         spriteBatch.begin();
         drawPlayer();
+        drawPlatforms();
         spriteBatch.end();
     }
     
@@ -83,6 +102,16 @@ public class WorldRenderer {
                 getPixelYValue(player.getY()),
                 getPixelXValue(player.getWidth()),
                 getPixelYValue(player.getHeight()));
+    }
+
+    private void drawPlatforms() {
+        for (Platform platform : world.getPlatforms()) {
+            spriteBatch.draw(platform.getImg(),
+                    getPixelXValue(platform.getX()),
+                    getPixelYValue(platform.getY()),
+                    getPixelXValue(platform.getWidth()),
+                    getPixelYValue(platform.getHeight()));
+        }
     }
 
     public void resize(int width, int height) {

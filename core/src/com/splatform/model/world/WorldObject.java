@@ -1,46 +1,46 @@
-package com.splatform.model.level;
+package com.splatform.model.world;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class LevelObject {
+public abstract class WorldObject {
 
-     // The default size (width/height) of a LevelObject
+     // The default size (width/height) of a WorldObject
     protected static final float DEFAULT_SIZE = 0.5f;
 
-     // The rectangular boundary surrounding a LevelObject
+     // The rectangular boundary surrounding a WorldObject
     protected Rectangle bounds = new Rectangle();
 
-     // The (x, y) position of the LevelObject (usually its lower left corner)
+     // The (x, y) position of the WorldObject (usually its lower left corner)
     protected Vector2 position = new Vector2();
 
-     // The velocity of the LevelObject in the x and y directions
+     // The velocity of the WorldObject in the x and y directions
     protected Vector2 velocity = new Vector2();
 
-     // The acceleration of the LevelObject in the x and y directions
+     // The acceleration of the WorldObject in the x and y directions
     protected Vector2 acceleration = new Vector2();
 
     /**
-     * Creates a new LevelObject at the specified position with the provided size
+     * Creates a new WorldObject at the specified position with the default size
      * 
-     * @param position The initial (x, y) position of the LevelObject
+     * @param position The initial (x, y) position of the WorldObject
+     */
+    public WorldObject(Vector2 position) {
+        this(position, DEFAULT_SIZE, DEFAULT_SIZE);
+    }
+
+    /**
+     * Creates a new WorldObject at the specified position with the provided size
+     * 
+     * @param position The initial (x, y) position of the WorldObject
      * @param width The initial width of the bounding box
      * @param height The initial height of the bounding box
      */
-    public LevelObject(Vector2 position, float width, float height) {
+    public WorldObject(Vector2 position, float width, float height) {
         this.position = position;
         bounds.width = width;
         bounds.height = height;
         bounds.setPosition(position);
-    }
-
-    /**
-     * Creates a new LevelObject at the specified position with the default size
-     * 
-     * @param position The initial (x, y) position of the LevelObject
-     */
-    public LevelObject(Vector2 position) {
-        this(position, DEFAULT_SIZE, DEFAULT_SIZE);
     }
     
     public Vector2 getPosition() {
@@ -83,11 +83,19 @@ public abstract class LevelObject {
     public void setBounds(Rectangle bounds) {
         this.bounds = bounds;
     }
+    
+    public float getWidth() {
+        return bounds.width;
+    }
+
+    public float getHeight() {
+        return bounds.height;
+    }
 
     /**
      * Updates the bounding box according to the player position
      */
-    public void updateBounds() {
+    public void update() {
         bounds.setPosition(position);
     }
 }

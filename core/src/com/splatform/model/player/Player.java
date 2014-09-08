@@ -1,11 +1,10 @@
 package com.splatform.model.player;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.splatform.model.level.LevelObject;
+import com.splatform.model.world.VisibleObject;
 import com.splatform.view.WorldRenderer;
 
-public class Player extends LevelObject {
+public class Player extends VisibleObject {
     
     private static final String newline = System.getProperty("line.separator");
 
@@ -19,9 +18,6 @@ public class Player extends LevelObject {
         JUMPING,
         FLYING
     }
-
-    // The image used for the player
-    private Sprite img;
     
     // The current state that the player is in
     private State state = State.STANDING;
@@ -53,27 +49,10 @@ public class Player extends LevelObject {
         img.setSize(width, height);
     }
     
-    public float getWidth() {
-        return bounds.width;
-    }
-
-    public float getHeight() {
-        return bounds.height;
-    }
-    
     public void setSize(float width, float height) {
         bounds.width = width;
         bounds.height = height;
         img.setSize(bounds.width, bounds.height);
-    }
-
-    public Sprite getImg() {
-        return img;
-    }
-
-    public void setImg(Sprite img) {
-        img.setSize(bounds.width, bounds.height);
-        this.img = img;
     }
     
     public State getState() {
