@@ -1,8 +1,10 @@
 package com.splatform.controller;
 
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.splatform.model.player.Player;
 import com.splatform.model.player.Player.State;
 import com.splatform.model.world.Platform;
@@ -10,7 +12,18 @@ import com.splatform.model.world.World;
 import com.splatform.view.WorldRenderer;
 
 public class PlayerController {
-    
+
+    private enum MotionType {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+        LEFT_UP,
+        LEFT_DOWN,
+        RIGHT_UP,
+        RIGHT_DOWN
+    }
+
     private static final float GRAVITY = -30f;
 
     private World world = WorldRenderer.getInstance().getWorld();
@@ -70,102 +83,259 @@ public class PlayerController {
         Vector2 playerAcceleration = player.getAcceleration();
         Rectangle playerBounds = player.getBounds();
 
-        // Get player center before moving
-        Vector2 playerOldCenter = new Vector2();
-        playerBounds.getCenter(playerOldCenter);
-
         // acceleration due to gravity
-        playerAcceleration.y = GRAVITY;
+        if (!player.getState().equals(State.STANDING)) {
+            playerAcceleration.y = GRAVITY;
+        }
         // velocity = initial velocity + acceleration * time
         playerVelocity.add(playerAcceleration.cpy().scl(delta));
         // position = initial position + velocity * time
-        Vector2 playerCenter = playerPosition.add(playerVelocity).cpy().add(playerBounds.width/2, playerBounds.height/2);
+        playerPosition.add(playerVelocity);
 
         // Find the corners of the old and new sprite positions to use for our movement line
-        Vector2 slope = playerCenter.cpy().sub(playerOldCenter);
-        Vector2 moveStart;
-        Vector2 moveEnd;
-        // Get the rectangle surrounding the movement
-        Rectangle moveBox = new Rectangle();
-        // Get the distance moved
-        Vector2 moveDistance;
-        // bottom left to top right
-        if (slope.x >= 0 && slope.y >= 0) {
-            moveStart = playerOldPosition;
-            moveEnd = playerPosition.cpy().add(playerBounds.width, playerBounds.height);
-            moveDistance = moveEnd.cpy().sub(moveStart);
-            moveBox.setPosition(moveStart);
-        }
-        // bottom right to top left
-        else if (slope.x < 0 && slope.y < 0) {
-            moveStart = playerOldPosition.cpy().add(playerBounds.width, 0);
-            moveEnd = playerPosition.cpy().add(0, playerBounds.height);
-            moveDistance = moveEnd.cpy().sub(moveStart);
-            moveBox.setPosition(moveStart.cpy().add(moveDistance.x, 0));
-        }
-        // top left to bottom right
-        else if (slope.x >= 0 && slope.y < 0) {
-            moveStart = playerOldPosition.cpy().add(0, playerBounds.height);
-            moveEnd = playerPosition.cpy().add(playerBounds.width, 0);
-            moveDistance = moveEnd.cpy().sub(moveStart);
-            moveBox.setPosition(moveStart.cpy().sub(moveDistance.y, 0));
-        }
-        // top right to bottom left
-        else {
-            moveStart = playerOldPosition.cpy().add(playerBounds.width, playerBounds.height);
-            moveEnd = playerPosition;
-            moveDistance = moveEnd.cpy().sub(moveStart);
-            moveBox.setPosition(moveStart.cpy().add(moveDistance));
-        }
-        moveBox.setWidth(Math.abs(moveDistance.x));
-        moveBox.setHeight(Math.abs(moveDistance.y));
+        Vector2 slope = playerPosition.cpy().sub(playerOldPosition);
+        if (slope.x != 0 || slope.y != 0) {
+            Vector2 moveStart = new Vector2();
+            Vector2 moveEnd = new Vector2();
+            // Get the rectangle surrounding the movement
+            Rectangle moveBox = new Rectangle();
+            // Get the distance moved
+            Vector2 moveBoxWidthHeight;
+            // Get the start and end points for the segments connecting the start and end of the
+            // outside corners of the direction of movement
+            Vector2 leftStart = new Vector2();
+            Vector2 leftEnd = new Vector2();
+            Vector2 rightStart = new Vector2();
+            Vector2 rightEnd = new Vector2();
+            MotionType motionType;
+            if (slope.x == 0) {
+                // up
+                if (slope.y > 0) {
+                    motionType = MotionType.UP;
 
-        // The player is below the bottom of the screen
-        // Set position to the ground and stop moving in the y direction
-        if (playerPosition.y < 0) {
-            playerPosition.y = 0;
-            land();
-        }
-        // The player is to the left of the left of the screen
-        // Set position to far left and stop moving in the x direction
-        if (playerPosition.x < 0) {
-            playerPosition.x = 0;
-            stopMovingX();
-        }
-        // The player is to the right of the right of the screen
-        // Set position to far right and stop moving in the x direction
-        if (playerPosition.x > WorldRenderer.WIDTH - playerBounds.width) {
-            playerPosition.x = WorldRenderer.WIDTH - playerBounds.width;
-            stopMovingX();
-        }
-        // Check to see if the player is on a path to collide with any platform
-        for (Platform platform : world.getPlatforms()) {
-            Rectangle platformBounds = platform.getBounds();
-            if (platformBounds.overlaps(moveBox)) {
-                // Get all four corners to check for intersection with the movement line
-                Vector2 bottomLeft = new Vector2(platformBounds.x, platformBounds.y);
-                Vector2 topLeft = new Vector2(platformBounds.x,
-                        platformBounds.y + platformBounds.height);
-                Vector2 topRight = new Vector2(platformBounds.x + platformBounds.width,
-                        platformBounds.y + platformBounds.height);
-                Vector2 bottomRight = new Vector2(platformBounds.x + platformBounds.width,
-                        platformBounds.y);
-                Vector2 intersect = new Vector2();
-                if (Intersector.intersectSegments(moveStart, moveEnd, topLeft, topRight, intersect)) {
-                    playerPosition.y = topLeft.y;
-                    land();
+                    // Move distance and move box
+                    moveBoxWidthHeight = new Vector2(playerBounds.width,
+                            playerPosition.y - playerOldPosition.y + playerBounds.height);
+                    moveBox.setPosition(playerOldPosition);
                 }
-                if (Intersector.intersectSegments(moveStart, moveEnd, bottomRight, bottomLeft, intersect)) {
-                    playerPosition.y = bottomRight.y - playerBounds.height;
-                    stopMovingY();
+                // down
+                else {
+                    motionType = MotionType.DOWN;
+
+                    moveBoxWidthHeight = new Vector2(playerBounds.width,
+                            playerOldPosition.y - playerPosition.y + playerBounds.height);
+                    moveBox.setPosition(playerPosition);
                 }
-                if (Intersector.intersectSegments(moveStart, moveEnd, bottomLeft, topLeft, intersect)) {
-                    playerPosition.x = bottomLeft.x - playerBounds.width;
-                    stopMovingX();
+            }
+            else if (slope.y == 0) {
+                // right
+                if (slope.x > 0) {
+                    motionType = MotionType.RIGHT;
+
+                    moveBoxWidthHeight = new Vector2(playerPosition.x - playerOldPosition.x + playerBounds.width,
+                            playerBounds.height);
+                    moveBox.setPosition(playerOldPosition);
                 }
-                if (Intersector.intersectSegments(moveStart, moveEnd, topRight, bottomRight, intersect)) {
-                    playerPosition.x = topRight.x;
-                    stopMovingX();
+                // left
+                else {
+                    motionType = MotionType.LEFT;
+
+                    moveBoxWidthHeight = new Vector2(playerOldPosition.x - playerPosition.x + playerBounds.width,
+                            playerBounds.height);
+                    moveBox.setPosition(playerPosition);
+                }
+            }
+            // bottom left to top right
+            else if (slope.x > 0 && slope.y > 0) {
+                motionType = MotionType.RIGHT_UP;
+
+                moveStart = playerOldPosition;
+                moveEnd = playerPosition.cpy().add(playerBounds.width, playerBounds.height);
+                moveBoxWidthHeight = moveEnd.cpy().sub(moveStart);
+                moveBox.setPosition(moveStart);
+
+                leftStart.x = playerOldPosition.x;
+                leftStart.y = playerOldPosition.y + playerBounds.height;
+                leftEnd = leftStart.cpy().add(slope);
+                rightStart.x = playerOldPosition.x + playerBounds.width;
+                rightStart.y = playerOldPosition.y;
+                rightEnd = rightStart.cpy().add(slope);
+            }
+            // bottom right to top left
+            else if (slope.x < 0 && slope.y > 0) {
+                motionType = MotionType.LEFT_UP;
+
+                moveStart = playerOldPosition.cpy().add(playerBounds.width, 0);
+                moveEnd = playerPosition.cpy().add(0, playerBounds.height);
+                moveBoxWidthHeight = moveEnd.cpy().sub(moveStart);
+                moveBox.setPosition(moveStart.cpy().add(moveBoxWidthHeight.x, 0));
+
+                leftStart.x = playerOldPosition.x;
+                leftStart.y = playerOldPosition.y;
+                leftEnd = leftStart.cpy().add(slope);
+                rightStart.x = playerOldPosition.x + playerBounds.width;
+                rightStart.y = playerOldPosition.y + playerBounds.height;
+                rightEnd = rightStart.cpy().add(slope);
+            }
+            // top left to bottom right
+            else if (slope.x > 0 && slope.y < 0) {
+                motionType = MotionType.RIGHT_DOWN;
+
+                moveStart = playerOldPosition.cpy().add(0, playerBounds.height);
+                moveEnd = playerPosition.cpy().add(playerBounds.width, 0);
+                moveBoxWidthHeight = moveEnd.cpy().sub(moveStart);
+                moveBox.setPosition(moveStart.cpy().add(0, moveBoxWidthHeight.y));
+
+                leftStart.x = playerOldPosition.x;
+                leftStart.y = playerOldPosition.y;
+                leftEnd = leftStart.cpy().add(slope);
+                rightStart.x = playerOldPosition.x + playerBounds.width;
+                rightStart.y = playerOldPosition.y + playerBounds.height;
+                rightEnd = rightStart.cpy().add(slope);
+            }
+            // top right to bottom left
+            else {
+                motionType = MotionType.LEFT_DOWN;
+
+                moveStart = playerOldPosition.cpy().add(playerBounds.width, playerBounds.height);
+                moveEnd = playerPosition;
+                moveBoxWidthHeight = moveEnd.cpy().sub(moveStart);
+                moveBox.setPosition(moveStart.cpy().add(moveBoxWidthHeight));
+
+                leftStart.x = playerOldPosition.x;
+                leftStart.y = playerOldPosition.y + playerBounds.height;
+                leftEnd = leftStart.cpy().add(slope);
+                rightStart.x = playerOldPosition.x + playerBounds.width;
+                rightStart.y = playerOldPosition.y;
+                rightEnd = rightStart.cpy().add(slope);
+            }
+            moveBox.setWidth(Math.abs(moveBoxWidthHeight.x));
+            moveBox.setHeight(Math.abs(moveBoxWidthHeight.y));
+
+            // The player is below the bottom of the screen
+            // Set position to the ground and stop moving in the y direction
+            if (playerPosition.y < 0) {
+                playerPosition.y = 0;
+                land();
+            }
+            // The player is to the left of the left of the screen
+            // Set position to far left and stop moving in the x direction
+            if (playerPosition.x < 0) {
+                playerPosition.x = 0;
+                stopMovingX();
+            }
+            // The player is to the right of the right of the screen
+            // Set position to far right and stop moving in the x direction
+            if (playerPosition.x > WorldRenderer.WIDTH - playerBounds.width) {
+                playerPosition.x = WorldRenderer.WIDTH - playerBounds.width;
+                stopMovingX();
+            }
+            // Check to see if the player is on a path to collide with any platform
+            float closestDistance = Float.MAX_VALUE;
+            for (Platform platform : world.getPlatforms()) {
+                Rectangle platformBounds = platform.getBounds();
+                Rectangle intersection = new Rectangle();
+                if (Intersector.intersectRectangles(platformBounds, moveBox, intersection)) {
+                    Array<Vector2> leftRegion = new Array<Vector2>(new Vector2[]{moveStart,
+                            moveEnd, leftEnd, leftStart});
+                    Array<Vector2> rightRegion = new Array<Vector2>(new Vector2[]{moveStart,
+                            moveEnd, rightEnd, rightStart});
+                    Vector2 intersectPosition = new Vector2();
+                    intersection.getPosition(intersectPosition);
+                    Vector2 bottomRight = intersectPosition.cpy().add(intersection.width, 0);
+                    Vector2 topLeft = intersectPosition.cpy().add(0, intersection.height);
+                    Vector2 topRight = intersectPosition.cpy().add(intersection.width, intersection.height);
+                    Vector2 platformIntersect = new Vector2();
+                    switch(motionType) {
+                        case UP:
+                            playerPosition.y = platformBounds.y - playerBounds.height;
+                            stopMovingY();
+                            break;
+                        case DOWN:
+                            playerPosition.y = platformBounds.y + platformBounds.height;
+                            land();
+                            break;
+                        case LEFT:
+                            playerPosition.x = platformBounds.x + platformBounds.width;
+                            stopMovingX();
+                            break;
+                        case RIGHT:
+                            playerPosition.x = platformBounds.x - playerBounds.width;
+                            stopMovingX();
+                            break;
+                        case LEFT_UP:
+                            if (Intersector.intersectSegments(moveStart, moveEnd,
+                                        intersectPosition, bottomRight, platformIntersect)
+                                    || Intersector.intersectSegments(rightStart, rightEnd,
+                                        intersectPosition, bottomRight, platformIntersect)
+                                    || Intersector.isPointInPolygon(rightRegion, intersectPosition)) {
+                                playerPosition.y = platformBounds.y - playerBounds.height;
+                                stopMovingY();
+                            }
+                            else if (Intersector.intersectSegments(moveStart, moveEnd,
+                                        bottomRight, topRight, platformIntersect)
+                                    || Intersector.intersectSegments(leftStart, leftEnd,
+                                        bottomRight, topRight, platformIntersect)
+                                    || Intersector.isPointInPolygon(leftRegion, topRight)) {
+                                playerPosition.x = platformBounds.x + platformBounds.width;
+                                stopMovingX();
+                            }
+                            break;
+                        case RIGHT_UP:
+                            if (Intersector.intersectSegments(moveStart, moveEnd,
+                                        intersectPosition, bottomRight, platformIntersect)
+                                    || Intersector.intersectSegments(leftStart, leftEnd,
+                                        intersectPosition, topLeft, platformIntersect)
+                                    || Intersector.isPointInPolygon(leftRegion, bottomRight)) {
+                                playerPosition.y = platformBounds.y - playerBounds.height;
+                                stopMovingY();
+                            }
+                            else if (Intersector.intersectSegments(moveStart, moveEnd,
+                                        intersectPosition, topLeft, platformIntersect)
+                                    || Intersector.intersectSegments(rightStart, rightEnd,
+                                        intersectPosition, topLeft, platformIntersect)
+                                    || Intersector.isPointInPolygon(rightRegion, topLeft)) {
+                                playerPosition.x = platformBounds.x - playerBounds.width;
+                                stopMovingX();
+                            }
+                            break;
+                        case LEFT_DOWN:
+                            if (Intersector.intersectSegments(moveStart, moveEnd,
+                                        topLeft, topRight, platformIntersect)
+                                    || Intersector.intersectSegments(rightStart, rightEnd,
+                                        topLeft, topRight, platformIntersect)
+                                    || Intersector.isPointInPolygon(rightRegion, topLeft)) {
+                                playerPosition.y = platformBounds.y + platformBounds.height;
+                                land();
+                            }
+                            else if (Intersector.intersectSegments(moveStart, moveEnd,
+                                        bottomRight, topRight, platformIntersect)
+                                    || Intersector.intersectSegments(leftStart, leftEnd,
+                                        bottomRight, topRight, platformIntersect)
+                                    || Intersector.isPointInPolygon(leftRegion, bottomRight)) {
+                                playerPosition.x = platformBounds.x + platformBounds.width;
+                                stopMovingX();
+                            }
+                            break;
+                        case RIGHT_DOWN:
+                            if (Intersector.intersectSegments(moveStart, moveEnd,
+                                        topLeft, topRight, platformIntersect)
+                                    || Intersector.intersectSegments(leftStart, leftEnd,
+                                        topLeft, topRight, platformIntersect)
+                                    || Intersector.isPointInPolygon(leftRegion, topRight)) {
+                                playerPosition.y = platformBounds.y + platformBounds.height;
+                                land();
+                            }
+                            else if (Intersector.intersectSegments(moveStart, moveEnd,
+                                        intersectPosition, topLeft, platformIntersect)
+                                    || Intersector.intersectSegments(rightStart, rightEnd,
+                                        intersectPosition, topLeft, platformIntersect)
+                                    || Intersector.isPointInPolygon(rightRegion, intersectPosition)) {
+                                playerPosition.x = platformBounds.x - playerBounds.width;
+                                stopMovingX();
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -194,10 +364,6 @@ public class PlayerController {
     }
     
     private void stopMovingY() {
-        if (player.getState().equals(State.JUMPING)
-                || player.getState().equals(State.FLYING)) {
-            player.setState(State.STANDING);
-        }
         player.getVelocity().y = 0;
     }
     
@@ -212,7 +378,12 @@ public class PlayerController {
     }
     
     private void land() {
+        if (player.getState().equals(State.JUMPING)
+                || player.getState().equals(State.FLYING)) {
+            player.setState(State.STANDING);
+        }
         stopMovingY();
+        player.getAcceleration().y = 0;
         if (isJumping) {
             isJumping = false;
         }

@@ -44,10 +44,7 @@ public class GameScreen implements Screen {
         world = new World();
         renderer = WorldRenderer.getInstance();
         world.setPlayer(new Player(new Vector2(), WorldRenderer.WIDTH/10, WorldRenderer.HEIGHT/10));
-        world.getPlatforms().add(new Platform(new Vector2(WorldRenderer.WIDTH/4, WorldRenderer.HEIGHT/4)));
-        world.getPlatforms().add(new Platform(new Vector2(WorldRenderer.WIDTH/3, WorldRenderer.HEIGHT/3)));
-        world.getPlatforms().add(new Platform(new Vector2(WorldRenderer.WIDTH/2, WorldRenderer.HEIGHT/2)));
-        world.getPlatforms().add(new Platform(new Vector2(WorldRenderer.WIDTH/1.5f, WorldRenderer.HEIGHT/1.5f)));
+        world.getPlatforms().add(new Platform(new Vector2(WorldRenderer.WIDTH/2, WorldRenderer.HEIGHT/2), 100, 100));
         renderer.setWorld(world);
         controller = new PlayerController();
         plexer.addProcessor(new MovementProcessor(controller));
