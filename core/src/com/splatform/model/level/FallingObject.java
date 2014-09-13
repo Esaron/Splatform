@@ -1,5 +1,7 @@
 package com.splatform.model.level;
 
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.splatform.view.WorldRenderer;
@@ -13,9 +15,9 @@ public class FallingObject extends LevelObject{
 	}
 	
 	public String randomImage(){
-		int rand = (int)(Math.random() * 2);
+		Random rand = new Random();
 		String img = "anvil";
-		switch (rand) {
+		switch (rand.nextInt(2)) {
 			case 0:
 				img = "moonstone0";
 				break;

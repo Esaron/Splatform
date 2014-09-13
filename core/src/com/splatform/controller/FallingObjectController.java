@@ -14,17 +14,15 @@ public class FallingObjectController {
     public void update(float delta) {
     	Vector2 velocity = fallingObject.getVelocity();
         Vector2 acceleration = fallingObject.getAcceleration();
-    	fallingObject.getAcceleration().y = GRAVITY;
-        velocity.add(acceleration.cpy().scl(delta));
+    	
+        fallingObject.getAcceleration().y = GRAVITY;
+    	velocity.add(acceleration.cpy().scl(delta));
         // position = initial position + velocity * time
         fallingObject.getPosition().add(velocity);
-    	if(fallingObject.getX() == 0){
-    		bounce();
-    	}
-    	fallingObject.updateBounds();
+
     }
     
-    private void bounce() {
+    private void bounce(float delta) {
     	fallingObject.getAcceleration().y = 30;
     }
     

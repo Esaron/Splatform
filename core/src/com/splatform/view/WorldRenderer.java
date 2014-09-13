@@ -48,7 +48,8 @@ public class WorldRenderer {
         ppux = (float)WIDTH/CAMERA_WIDTH;
         ppuy = (float)HEIGHT/CAMERA_HEIGHT;
         player = new Player(new Vector2(), WIDTH/10f, HEIGHT/10f);
-        fallingObject = new FallingObject(new Vector2(500,500), WIDTH/10f, HEIGHT/10f);
+        fallingObject = new FallingObject(new Vector2((int)(Math.random() * WorldRenderer.WIDTH)
+        					,WorldRenderer.HEIGHT), WIDTH/10f, HEIGHT/10f);
     }
     
     private float getPixelXValue(float unitXValue) {
