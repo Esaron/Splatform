@@ -26,9 +26,9 @@ public class Player extends VisibleObject {
     private float stateTime;
     
     // The speeds at which the player runs, jumps, and flies
-    private float runVelocity = 5f;
-    private float jumpVelocity = 8f;
-    private float flyVelocity = 8f;
+    private float runVelocity = 400f;
+    private float jumpVelocity = 550f;
+    private float flyVelocity = 550f;
     
     // The maximum amount of time the player can fly for before having to land
     private float maxFlyTime = 3000f;
