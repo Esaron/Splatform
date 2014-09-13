@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import com.splatform.model.level.FallingObject;
 import com.splatform.model.player.Player;
 
 public class WorldRenderer {
@@ -34,6 +35,7 @@ public class WorldRenderer {
     private float ppuy;
     
     private Player player;
+    private FallingObject fallingObject;
     
     // Used to draw all the sprites to the screen
     private SpriteBatch spriteBatch = new SpriteBatch();
@@ -46,6 +48,7 @@ public class WorldRenderer {
         ppux = (float)WIDTH/CAMERA_WIDTH;
         ppuy = (float)HEIGHT/CAMERA_HEIGHT;
         player = new Player(new Vector2(), WIDTH/10f, HEIGHT/10f);
+        fallingObject = new FallingObject(new Vector2(500,500), WIDTH/10f, HEIGHT/10f);
     }
     
     private float getPixelXValue(float unitXValue) {
@@ -70,10 +73,15 @@ public class WorldRenderer {
     public Player getPlayer() {
         return player;
     }
+    
+    public FallingObject getFallingObject() {
+    	return fallingObject;
+    }
 
     public void render(float delta, GL20 gl) {
         spriteBatch.begin();
         drawPlayer();
+        drawFallingObjects();
         spriteBatch.end();
     }
     
@@ -83,6 +91,14 @@ public class WorldRenderer {
                 getPixelYValue(player.getY()),
                 getPixelXValue(player.getWidth()),
                 getPixelYValue(player.getHeight()));
+    }
+    
+    private void drawFallingObjects() {
+    	spriteBatch.draw(fallingObject.getImg(),
+    			getPixelXValue(fallingObject.getX()),
+    			getPixelYValue(fallingObject.getY()),
+    			getPixelXValue(fallingObject.getWidth()),
+    			getPixelYValue(fallingObject.getHeight()));
     }
 
     public void resize(int width, int height) {

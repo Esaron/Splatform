@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.splatform.controller.FallingObjectController;
 import com.splatform.controller.PlayerController;
 import com.splatform.input.DebugProcessor;
 import com.splatform.input.MovementProcessor;
@@ -14,6 +15,7 @@ public class GameScreen implements Screen
     private InputMultiplexer plexer = new InputMultiplexer();
     private WorldRenderer renderer;
     private PlayerController controller;
+    private FallingObjectController objectController; 
 
     public GameScreen() {}
 
@@ -23,6 +25,7 @@ public class GameScreen implements Screen
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         controller.update(delta);
+        objectController.update(delta);
         renderer.render(delta, gl);
     }
 
@@ -38,6 +41,7 @@ public class GameScreen implements Screen
     @Override
     public void show() {
         renderer = WorldRenderer.getInstance();
+        objectController = new FallingObjectController();
         controller = new PlayerController();
         plexer.addProcessor(new MovementProcessor(controller));
         plexer.addProcessor(new DebugProcessor());
