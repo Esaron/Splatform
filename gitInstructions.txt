@@ -24,7 +24,7 @@ When you want to browse through code history:
 NEVER PUSH BROKEN CODE!
 If you have some new code that you want to push to github to save your history and back it up,
 or if you want me to look at it, use the following instructions to make a new branch BEFORE using 'git push':
-  git branch -m "<new branch name>"
+  git checkout -b "<new branch name>"
     This will move everything you're working on (the current local branch on your computer) to a new local branch with
     the name you provided. Now, when you push this new branch (which still has all of your work, whether you already
     committed it or not) a new branch will be created on github, and the old branch won't change. Now you can jump back
