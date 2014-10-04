@@ -544,25 +544,27 @@ public class PlayerController {
             stopMovingX();
         }
 
-        player.update();
+        player.update(delta);
     }
     
     private void moveLeft() {
         if (player.getState().equals(State.STANDING)) {
-            player.setState(State.RUNNING);
+            player.setState(State.RUNNING_LEFT);
         }
         player.getVelocity().x = -player.getRunVelocity();
     }
     
     private void moveRight() {
         if (player.getState().equals(State.STANDING)) {
-            player.setState(State.RUNNING);
+            player.setState(State.RUNNING_RIGHT);
         }
         player.getVelocity().x = player.getRunVelocity();
     }
     
     private void stopMovingX() {
-        if (player.getState().equals(State.RUNNING)) {
+        State state = player.getState();
+        if (state.equals(State.RUNNING_LEFT)
+                || state.equals(State.RUNNING_RIGHT)) {
             player.setState(State.STANDING);
         }
         player.getVelocity().x = 0;

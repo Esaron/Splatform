@@ -1,5 +1,10 @@
 package com.splatform.model.player;
 
+import java.util.ArrayList;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.splatform.model.world.VisibleObject;
 import com.splatform.view.WorldRenderer;
@@ -8,13 +13,16 @@ public class Player extends VisibleObject {
     
     private static final String newline = System.getProperty("line.separator");
 
+    private static final float FPS_SCL = 1/3f;
+
     /**
      * This enum is used to track the state of the player
      * The player will only ever be in one state at a time
      */
     public enum State {
         STANDING,
-        RUNNING,
+        RUNNING_LEFT,
+        RUNNING_RIGHT,
         JUMPING,
         FLYING
     }
@@ -36,6 +44,11 @@ public class Player extends VisibleObject {
     // The maximum amount of time the player can jump for before having to land/fly
     private float maxJumpTime = 250f;
 
+    private Animation leftFrames;
+    private Animation rightFrames;
+    private Animation jumpFrames;
+    private Animation flyFrames;
+
     /**
      * Creates a new player at the provided position with the provided width and height
      * 
@@ -47,12 +60,40 @@ public class Player extends VisibleObject {
         super(position, width, height);
         img = WorldRenderer.TEXTURES.createSprite("Dale");
         img.setSize(width, height);
+        leftFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        leftFrames.setPlayMode(PlayMode.LOOP);
+        rightFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        rightFrames.setPlayMode(PlayMode.LOOP);
+        jumpFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        jumpFrames.setPlayMode(PlayMode.LOOP);
+        flyFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        flyFrames.setPlayMode(PlayMode.LOOP);
     }
     
     public void setSize(float width, float height) {
         bounds.width = width;
         bounds.height = height;
         img.setSize(bounds.width, bounds.height);
+        for (TextureRegion frame : leftFrames.getKeyFrames()) {
+            frame.setRegionWidth((int) bounds.width);
+            frame.setRegionHeight((int)bounds.height);
+        }
+        for (TextureRegion frame : rightFrames.getKeyFrames()) {
+            frame.setRegionWidth((int) bounds.width);
+            frame.setRegionHeight((int)bounds.height);
+        }
+        for (TextureRegion frame : jumpFrames.getKeyFrames()) {
+            frame.setRegionWidth((int) bounds.width);
+            frame.setRegionHeight((int)bounds.height);
+        }
+        for (TextureRegion frame : flyFrames.getKeyFrames()) {
+            frame.setRegionWidth((int) bounds.width);
+            frame.setRegionHeight((int)bounds.height);
+        }
     }
     
     public State getState() {
@@ -70,6 +111,21 @@ public class Player extends VisibleObject {
     
     public void setStateTime(float stateTime) {
         this.stateTime = stateTime;
+    }
+    
+    public TextureRegion getCurrentFrame() {
+        switch(state) {
+            case RUNNING_LEFT:
+                return leftFrames.getKeyFrame(stateTime);
+            case RUNNING_RIGHT:
+                return rightFrames.getKeyFrame(stateTime);
+            case JUMPING:
+                return jumpFrames.getKeyFrame(stateTime);
+            case FLYING:
+                return flyFrames.getKeyFrame(stateTime);
+            default:
+                return img;
+        }
     }
 
     public float getRunVelocity() {
@@ -110,6 +166,12 @@ public class Player extends VisibleObject {
     
     public void setMaxJumpTime(float maxJumpTime) {
         this.maxJumpTime = maxJumpTime;
+    }
+    
+    @Override
+    public void update(float delta) {
+        super.update(delta);
+        stateTime += delta;
     }
 
     public String toString() {

@@ -97,7 +97,7 @@ public class WorldRenderer {
     }
     
     private void drawPlayer() {
-        spriteBatch.draw(player.getImg(),
+        spriteBatch.draw(player.getCurrentFrame(),
                 getPixelXValue(player.getX()),
                 getPixelYValue(player.getY()),
                 getPixelXValue(player.getWidth()),

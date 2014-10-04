@@ -22,10 +22,10 @@ public class World {
         return platforms;
     }
 
-    public void update() {
-        player.update();
+    public void update(float delta) {
+        player.update(delta);
         for (Platform platform : platforms) {
-            platform.update();
+            platform.update(delta);
         }
     }
 }

@@ -95,7 +95,7 @@ public abstract class WorldObject {
     /**
      * Updates the bounding box according to the player position
      */
-    public void update() {
+    public void update(float delta) {
         bounds.setPosition(position);
     }
 }
