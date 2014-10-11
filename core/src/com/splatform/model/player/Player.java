@@ -1,15 +1,13 @@
 package com.splatform.model.player;
 
-import java.util.ArrayList;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.splatform.model.world.VisibleObject;
+import com.splatform.model.world.AnimatedObject;
 import com.splatform.view.WorldRenderer;
 
-public class Player extends VisibleObject {
+public class Player extends AnimatedObject {
     
     private static final String newline = System.getProperty("line.separator");
 
@@ -20,15 +18,20 @@ public class Player extends VisibleObject {
      * The player will only ever be in one state at a time
      */
     public enum State {
-        STANDING,
+        STANDING_LEFT,
+        STANDING_RIGHT,
         RUNNING_LEFT,
         RUNNING_RIGHT,
-        JUMPING,
-        FLYING
+        JUMPING_LEFT,
+        JUMPING_RIGHT,
+        FLYING_LEFT,
+        FLYING_RIGHT,
+        LANDING_LEFT,
+        LANDING_RIGHT
     }
     
     // The current state that the player is in
-    private State state = State.STANDING;
+    private State state;
     
     // The amount of time the player has been in its current state
     private float stateTime;
@@ -44,10 +47,18 @@ public class Player extends VisibleObject {
     // The maximum amount of time the player can jump for before having to land/fly
     private float maxJumpTime = 250f;
 
-    private Animation leftFrames;
-    private Animation rightFrames;
-    private Animation jumpFrames;
-    private Animation flyFrames;
+    private Animation standLeftFrames;
+    private Animation standRightFrames;
+    private Animation runLeftFrames;
+    private Animation runRightFrames;
+    private Animation jumpLeftFrames;
+    private Animation jumpRightFrames;
+    private Animation flyLeftFrames;
+    private Animation flyRightFrames;
+    private Animation fallLeftFrames;
+    private Animation fallRightFrames;
+    private Animation landLeftFrames;
+    private Animation landRightFrames;
 
     /**
      * Creates a new player at the provided position with the provided width and height
@@ -56,44 +67,58 @@ public class Player extends VisibleObject {
      * @param width The width of the player's bounding box
      * @param height The height of the player's bounding box
      */
-    public Player(Vector2 position, float width, float height) {
+    public Player(Vector2 position, float width, float height, State state) {
         super(position, width, height);
-        img = WorldRenderer.TEXTURES.createSprite("Dale");
-        img.setSize(width, height);
-        leftFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+        this.state = state;
+        standLeftFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("Dale"));
+        standLeftFrames.setPlayMode(PlayMode.LOOP);
+        animations.add(standLeftFrames);
+        standRightFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"));
+        standRightFrames.setPlayMode(PlayMode.LOOP);
+        animations.add(standRightFrames);
+        runLeftFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
                 WorldRenderer.TEXTURES.createSprite("metal_plate"));
-        leftFrames.setPlayMode(PlayMode.LOOP);
-        rightFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+        runLeftFrames.setPlayMode(PlayMode.LOOP);
+        animations.add(runLeftFrames);
+        runRightFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
                 WorldRenderer.TEXTURES.createSprite("metal_plate"));
-        rightFrames.setPlayMode(PlayMode.LOOP);
-        jumpFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+        runRightFrames.setPlayMode(PlayMode.LOOP);
+        animations.add(runRightFrames);
+        jumpLeftFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
                 WorldRenderer.TEXTURES.createSprite("metal_plate"));
-        jumpFrames.setPlayMode(PlayMode.LOOP);
-        flyFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+        jumpLeftFrames.setPlayMode(PlayMode.NORMAL);
+        animations.add(jumpLeftFrames);
+        jumpRightFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
                 WorldRenderer.TEXTURES.createSprite("metal_plate"));
-        flyFrames.setPlayMode(PlayMode.LOOP);
-    }
-    
-    public void setSize(float width, float height) {
-        bounds.width = width;
-        bounds.height = height;
-        img.setSize(bounds.width, bounds.height);
-        for (TextureRegion frame : leftFrames.getKeyFrames()) {
-            frame.setRegionWidth((int) bounds.width);
-            frame.setRegionHeight((int)bounds.height);
-        }
-        for (TextureRegion frame : rightFrames.getKeyFrames()) {
-            frame.setRegionWidth((int) bounds.width);
-            frame.setRegionHeight((int)bounds.height);
-        }
-        for (TextureRegion frame : jumpFrames.getKeyFrames()) {
-            frame.setRegionWidth((int) bounds.width);
-            frame.setRegionHeight((int)bounds.height);
-        }
-        for (TextureRegion frame : flyFrames.getKeyFrames()) {
-            frame.setRegionWidth((int) bounds.width);
-            frame.setRegionHeight((int)bounds.height);
-        }
+        jumpRightFrames.setPlayMode(PlayMode.NORMAL);
+        animations.add(jumpRightFrames);
+        flyLeftFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        flyLeftFrames.setPlayMode(PlayMode.LOOP);
+        animations.add(flyLeftFrames);
+        flyRightFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        flyRightFrames.setPlayMode(PlayMode.LOOP);
+        animations.add(flyRightFrames);
+        setFrameSize(bounds.width, bounds.height);
+        fallLeftFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        fallLeftFrames.setPlayMode(PlayMode.LOOP);
+        animations.add(fallLeftFrames);
+        fallRightFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        fallRightFrames.setPlayMode(PlayMode.LOOP);
+        animations.add(fallRightFrames);
+        setFrameSize(bounds.width, bounds.height);
+        landLeftFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        landLeftFrames.setPlayMode(PlayMode.NORMAL);
+        animations.add(landLeftFrames);
+        landRightFrames = new Animation(FPS_SCL, WorldRenderer.TEXTURES.createSprite("badlogic"),
+                WorldRenderer.TEXTURES.createSprite("metal_plate"));
+        landRightFrames.setPlayMode(PlayMode.NORMAL);
+        animations.add(landRightFrames);
+        setFrameSize(bounds.width, bounds.height);
     }
     
     public State getState() {
@@ -115,16 +140,24 @@ public class Player extends VisibleObject {
     
     public TextureRegion getCurrentFrame() {
         switch(state) {
+            case STANDING_LEFT:
+                return standLeftFrames.getKeyFrame(stateTime);
+            case STANDING_RIGHT:
+                return standRightFrames.getKeyFrame(stateTime);
             case RUNNING_LEFT:
-                return leftFrames.getKeyFrame(stateTime);
+                return runLeftFrames.getKeyFrame(stateTime);
             case RUNNING_RIGHT:
-                return rightFrames.getKeyFrame(stateTime);
-            case JUMPING:
-                return jumpFrames.getKeyFrame(stateTime);
-            case FLYING:
-                return flyFrames.getKeyFrame(stateTime);
+                return runRightFrames.getKeyFrame(stateTime);
+            case JUMPING_LEFT:
+                return jumpLeftFrames.getKeyFrame(stateTime);
+            case JUMPING_RIGHT:
+                return jumpRightFrames.getKeyFrame(stateTime);
+            case FLYING_LEFT:
+                return flyLeftFrames.getKeyFrame(stateTime);
+            case FLYING_RIGHT:
+                return flyRightFrames.getKeyFrame(stateTime);
             default:
-                return img;
+                throw new IllegalStateException("Player is in an illegal state.");
         }
     }
 

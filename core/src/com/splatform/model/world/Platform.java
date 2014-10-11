@@ -3,7 +3,7 @@ package com.splatform.model.world;
 import com.badlogic.gdx.math.Vector2;
 import com.splatform.view.WorldRenderer;
 
-public class Platform extends VisibleObject {
+public class Platform extends NonAnimatedObject {
 
     private static float DEFAULT_WIDTH = WorldRenderer.WIDTH/10;
     private static float DEFAULT_HEIGHT = WorldRenderer.HEIGHT/30;

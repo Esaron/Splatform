@@ -120,7 +120,7 @@ public class WorldRenderer {
         cam.position.set(WIDTH/2, HEIGHT/2, 300);
         cam.near = 0.1f;
         cam.far = 300f;
-        player.setSize(WIDTH/10, HEIGHT/10);
+        player.setFrameSize(WIDTH/10, HEIGHT/10);
         cam.update();
     }
 }

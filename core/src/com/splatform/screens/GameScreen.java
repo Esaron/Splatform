@@ -9,6 +9,7 @@ import com.splatform.controller.PlayerController;
 import com.splatform.input.DebugProcessor;
 import com.splatform.input.MovementProcessor;
 import com.splatform.model.player.Player;
+import com.splatform.model.player.Player.State;
 import com.splatform.model.world.Platform;
 import com.splatform.model.world.World;
 import com.splatform.view.WorldRenderer;
@@ -43,7 +44,7 @@ public class GameScreen implements Screen {
     public void show() {
         world = new World();
         renderer = WorldRenderer.getInstance();
-        world.setPlayer(new Player(new Vector2(), WorldRenderer.WIDTH/10, WorldRenderer.HEIGHT/10));
+        world.setPlayer(new Player(new Vector2(), WorldRenderer.WIDTH/10, WorldRenderer.HEIGHT/10, State.STANDING_RIGHT));
         world.getPlatforms().add(new Platform(new Vector2(WorldRenderer.WIDTH/2, WorldRenderer.HEIGHT/2), 100, 100));
         renderer.setWorld(world);
         controller = new PlayerController();

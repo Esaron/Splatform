@@ -83,7 +83,8 @@ public class PlayerController {
         Rectangle playerBounds = player.getBounds();
 
         // acceleration due to gravity
-        if (!player.getState().equals(State.STANDING)) {
+        if (!(player.getState().equals(State.STANDING_LEFT)
+                || player.getState().equals(State.STANDING_RIGHT))) {
             playerAcceleration.y = GRAVITY;
         }
         // velocity = initial velocity + acceleration * time
@@ -548,14 +549,16 @@ public class PlayerController {
     }
     
     private void moveLeft() {
-        if (player.getState().equals(State.STANDING)) {
+        if (player.getState().equals(State.STANDING_LEFT)
+                || player.getState().equals(State.STANDING_RIGHT)) {
             player.setState(State.RUNNING_LEFT);
         }
         player.getVelocity().x = -player.getRunVelocity();
     }
     
     private void moveRight() {
-        if (player.getState().equals(State.STANDING)) {
+        if (player.getState().equals(State.STANDING_LEFT)
+                || player.getState().equals(State.STANDING_RIGHT)) {
             player.setState(State.RUNNING_RIGHT);
         }
         player.getVelocity().x = player.getRunVelocity();
@@ -563,9 +566,11 @@ public class PlayerController {
     
     private void stopMovingX() {
         State state = player.getState();
-        if (state.equals(State.RUNNING_LEFT)
-                || state.equals(State.RUNNING_RIGHT)) {
-            player.setState(State.STANDING);
+        if (state.equals(State.RUNNING_LEFT)) {
+            player.setState(State.STANDING_LEFT);
+        }
+        else if (state.equals(State.RUNNING_RIGHT)) {
+            player.setState(State.STANDING_RIGHT);
         }
         player.getVelocity().x = 0;
     }
@@ -575,19 +580,37 @@ public class PlayerController {
     }
     
     private void jump() {
-        player.setState(State.JUMPING);
+        State state = player.getState();
+        if (state.equals(State.STANDING_LEFT)
+                || state.equals(State.RUNNING_LEFT)) {
+            player.setState(State.JUMPING_LEFT);
+        }
+        else if (state.equals(State.STANDING_RIGHT)
+                || state.equals(State.RUNNING_RIGHT)) {
+            player.setState(State.JUMPING_RIGHT);
+        }
         player.getVelocity().y = player.getJumpVelocity();
     }
     
     private void fly() {
-        player.setState(State.FLYING);
+        State state = player.getState();
+        if (state.equals(State.JUMPING_LEFT)) {
+            player.setState(State.FLYING_LEFT);
+        }
+        else if (state.equals(State.JUMPING_RIGHT)) {
+            player.setState(State.FLYING_RIGHT);
+        }
         player.getVelocity().y = player.getFlyVelocity();
     }
     
     private void land() {
-        if (player.getState().equals(State.JUMPING)
-                || player.getState().equals(State.FLYING)) {
-            player.setState(State.STANDING);
+        if (player.getState().equals(State.JUMPING_LEFT)
+                || player.getState().equals(State.FLYING_LEFT)) {
+            player.setState(State.STANDING_LEFT);
+        }
+        else if (player.getState().equals(State.JUMPING_RIGHT)
+                || player.getState().equals(State.FLYING_RIGHT)) {
+            player.setState(State.STANDING_RIGHT);
         }
         stopMovingY();
         player.getAcceleration().y = 0;

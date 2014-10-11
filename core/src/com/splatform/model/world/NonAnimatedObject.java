@@ -3,13 +3,13 @@ package com.splatform.model.world;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class VisibleObject extends WorldObject {
+public abstract class NonAnimatedObject extends WorldObject {
 
-    public VisibleObject(Vector2 position) {
+    public NonAnimatedObject(Vector2 position) {
         super(position);
     }
 
-    public VisibleObject(Vector2 position, float width, float height) {
+    public NonAnimatedObject(Vector2 position, float width, float height) {
         super(position, width, height);
     }
 
